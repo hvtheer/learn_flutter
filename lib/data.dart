@@ -9,10 +9,10 @@ class Document {
         case {
           'metadata': {
             'title': String title,
-            'modified': DateTime localModified,
+            'modified': String localModified,
           }
         }) {
-      return (title, modified: localModified);
+      return (title, modified: DateTime.parse(localModified));
     } else {
       throw const FormatException('Unexpected JSON');
     }
