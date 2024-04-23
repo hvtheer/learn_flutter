@@ -5,16 +5,40 @@ class Document {
   Document() : _json = jsonDecode(documentJson);
 
   (String, {DateTime modified}) get metadata {
-if (_json
-  case {
-    'metadata': {
-      'title': String title,
-      'modified': DateTime localModified,
+    if (_json
+        case {
+          'metadata': {
+            'title': String title,
+            'modified': DateTime localModified,
+          }
+        }) {
+      return (title, modified: localModified);
+    } else {
+      throw const FormatException('Unexpected JSON');
     }
-  }) {
-    return (title, modified: localModified);
-  } else {
-    throw const FormatException('Unexpected JSON');
+  }
+
+  List<Block> getBlocks() {
+    if (_json case {'blocks': List blocksJson}) {
+      return [for (final blockJson in blocksJson) Block.fromJson(blockJson)];
+    } else {
+      throw const FormatException('Unexpected JSON format');
+    }
+  }
+}
+
+class Block {
+  final String type;
+  final String text;
+  Block(this.type, this.text);
+
+// The factory constructor fromJson() uses the same if-case with a map pattern
+  factory Block.fromJson(Map<String, dynamic> json) {
+    if (json case {'type': final type, 'text': final text}) {
+      return Block(type, text);
+    } else {
+      throw const FormatException('Unexpected JSON format');
+    }
   }
 }
 
